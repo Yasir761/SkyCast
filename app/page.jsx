@@ -1,10 +1,11 @@
 "use client";
 import Image from "next/image";
+import React from "react";
 import AirPollution from "./Components/AirPollution/AirPollution.jsx";
 import DailyForecast from "./Components/DailyForecast/DailyForecast.jsx";
 import FeelsLike from "./Components/FeelsLike/FeelsLike.jsx";
 import Humidity from "./Components/Humidity/Humidity.jsx";
-import Mapbox from "./Components/Mapbox/Mapbox.js";
+import dynamic from "next/dynamic";  // Use dynamic import for client-side only components
 import Navbar from "./Components/Navbar.jsx";
 import Population from "./Components/Population/Population.jsx";
 import Pressure from "./Components/Pressure/Pressure.jsx";
@@ -17,17 +18,20 @@ import defaultStates from "./utils/defaultStates.jsx";
 import FiveDayForecast from "./Components/FiveDayForecast/FiveDayForecast.jsx";
 import { useGlobalContextUpdate } from "../app/context/globalContext.js";
 
+// Dynamically import the Mapbox component, disabling SSR
+const Mapbox = dynamic(() => import("./Components/Mapbox/Mapbox.js"), { ssr: false });
+
 export default function Home() {
   const { setActiveCityCoords } = useGlobalContextUpdate();
 
   const getClickedCityCords = (lat, lon) => {
     setActiveCityCoords([lat, lon]);
-if(typeof window != 'undefined'){
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }
+    if (typeof window !== "undefined") {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
   };
 
   return (
