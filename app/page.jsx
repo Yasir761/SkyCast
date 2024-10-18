@@ -22,11 +22,12 @@ export default function Home() {
 
   const getClickedCityCords = (lat, lon) => {
     setActiveCityCoords([lat, lon]);
-
+if(typeof window != 'undefined'){
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
+  }
   };
 
   return (
