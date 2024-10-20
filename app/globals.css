@@ -156,3 +156,10 @@ footer:hover .footer-text > img {
     flex: initial;
   }
 }
+
+.states {
+  max-height: 6000px; 
+  overflow-y: auto;  
+  border: 1px solid #ccc; 
+  padding: 10px; 
+}
