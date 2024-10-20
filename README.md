@@ -4,11 +4,14 @@
 
 ## Features:
 - 🌍 **Real-time Weather Data**: Get up-to-date information on the weather for any city in the world.
-- 🗺️ **Interactive Map**: View weather conditions visually with an interactive map powered by **Mapbox**.
 - 📊 **Detailed Forecasts**: Check 5-day forecasts, daily forecasts, and detailed information on temperature, air pollution, and more.
 - 🌅 **Sunset & UV Index**: View daily UV index and sunset timings for different locations.
 - 🚀 **Fast & Responsive**: Optimized for speed and built using **Next.js** for server-side rendering and SEO.
 - 🌐 **Open Source**: Contributions are welcome! Feel free to fork this project, contribute to the code, or suggest new features.
+
+## Map Component
+
+This project uses the **react-leaflet** library to display maps with tiles provided by **OpenStreetMap**. No API keys or tokens are required to use this service.
 
 ## Tech Stack:
 - **Frontend**: React, Next.js
