@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import AirPollution from "./Components/AirPollution/AirPollution.jsx";
 import DailyForecast from "./Components/DailyForecast/DailyForecast.jsx";
 import FeelsLike from "./Components/FeelsLike/FeelsLike.jsx";
@@ -24,6 +24,7 @@ const Mapbox = dynamic(() => import("./Components/Mapbox/Mapbox.js"), { ssr: fal
 export default function Home() {
   const { setActiveCityCoords } = useGlobalContextUpdate();
 
+  // function to set coordinates
   const getClickedCityCords = (lat, lon) => {
     setActiveCityCoords([lat, lon]);
     if (typeof window !== "undefined") {
@@ -33,6 +34,27 @@ export default function Home() {
       });
     }
   };
+
+  // detect the user's current location on initial load
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setActiveCityCoords([latitude, longitude]);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          // fallback coordinates in case of error
+          setActiveCityCoords([defaultStates[0].lat, defaultStates[0].lon]);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+      // fallback coordinates in case geolocation is unavailable (but pretty much all browsers support geolocation)
+      setActiveCityCoords([defaultStates[0].lat, defaultStates[0].lon]);
+    }
+  }, [setActiveCityCoords]);
 
   return (
     <main className="mx-[1rem] lg:mx-[2rem] xl:mx-[6rem] 2xl:mx-[16rem] m-auto">
