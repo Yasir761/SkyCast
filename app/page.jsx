@@ -86,7 +86,7 @@ export default function Home() {
         <p className="footer-text text-sm flex items-center gap-1">
           Made by
           <a
-            href="https://thecodedealer.com"
+            href="#" // portfolio link for future
             target="_blank"
             rel="noopener noreferrer"
             className="text-green-300 font-bold"
