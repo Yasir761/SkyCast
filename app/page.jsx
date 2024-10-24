@@ -1,13 +1,11 @@
 "use client";
 
-import React from "react";
-import SimpleBar from "simplebar-react";
-import 'simplebar/dist/simplebar.css'; 
+import React, { useEffect } from "react";
 import AirPollution from "./Components/AirPollution/AirPollution.jsx";
 import DailyForecast from "./Components/DailyForecast/DailyForecast.jsx";
 import FeelsLike from "./Components/FeelsLike/FeelsLike.jsx";
 import Humidity from "./Components/Humidity/Humidity.jsx";
-import dynamic from "next/dynamic";
+import dynamic from "next/dynamic";  // Use dynamic import for client-side only components
 import Navbar from "./Components/Navbar.jsx";
 import Population from "./Components/Population/Population.jsx";
 import Pressure from "./Components/Pressure/Pressure.jsx";
@@ -20,11 +18,13 @@ import defaultStates from "./utils/defaultStates.jsx";
 import FiveDayForecast from "./Components/FiveDayForecast/FiveDayForecast.jsx";
 import { useGlobalContextUpdate } from "../app/context/globalContext.js";
 
+// Dynamically import the Mapbox component, disabling SSR
 const Mapbox = dynamic(() => import("./Components/Mapbox/Mapbox.js"), { ssr: false });
 
 export default function Home() {
   const { setActiveCityCoords } = useGlobalContextUpdate();
 
+  // function to set coordinates
   const getClickedCityCords = (lat, lon) => {
     setActiveCityCoords([lat, lon]);
     if (typeof window !== "undefined") {
@@ -34,6 +34,27 @@ export default function Home() {
       });
     }
   };
+
+  // detect the user's current location on initial load
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setActiveCityCoords([latitude, longitude]);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          // fallback coordinates in case of error
+          setActiveCityCoords([defaultStates[0].lat, defaultStates[0].lon]);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+      // fallback coordinates in case geolocation is unavailable (but pretty much all browsers support geolocation)
+      setActiveCityCoords([defaultStates[0].lat, defaultStates[0].lon]);
+    }
+  }, [setActiveCityCoords]);
 
   return (
     <main className="mx-[1rem] lg:mx-[2rem] xl:mx-[6rem] 2xl:mx-[16rem] m-auto">
@@ -59,24 +80,24 @@ export default function Home() {
           <div className="mapbox-con mt-4 flex gap-4">
             <Mapbox />
             <div className="states flex flex-col gap-3 flex-1">
-              <h2 className="flex items-center gap-2 font-medium">Top Large Cities</h2>
-              <SimpleBar style={{ maxHeight: 400 }}> 
-                <div className="flex flex-col gap-4">
-                  {defaultStates.map((state, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="border rounded-lg cursor-pointer dark:bg-dark-grey shadow-sm dark:shadow-none"
-                        onClick={() => {
-                          getClickedCityCords(state.lat, state.lon);
-                        }}
-                      >
-                        <p className="px-6 py-4">{state.name}</p>
-                      </div>
-                    );
-                  })}
-                </div>
-              </SimpleBar>
+              <h2 className="flex items-center gap-2 font-medium">
+                Top Large Cities
+              </h2>
+              <div className="flex flex-col gap-4">
+                {defaultStates.map((state, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="border rounded-lg cursor-pointer dark:bg-dark-grey shadow-sm dark:shadow-none"
+                      onClick={() => {
+                        getClickedCityCords(state.lat, state.lon);
+                      }}
+                    >
+                      <p className="px-6 py-4">{state.name}</p>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
@@ -85,11 +106,11 @@ export default function Home() {
       <footer className="py-4 flex justify-center pb-8">
         <p className="footer-text text-sm flex items-center gap-1">
           Made by
+          
           <a
             href="#" // portfolio link for future
             target="_blank"
-            rel="noopener noreferrer"
-            className="text-green-300 font-bold"
+            className=" text-green-300 font-bold"
           >
             Yasir
           </a>
